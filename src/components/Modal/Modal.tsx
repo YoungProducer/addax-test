@@ -27,35 +27,35 @@ const ModalOverlay = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: ${({ theme }) => theme.zIndex.modal};
 `;
 
 const ModalContent = styled.div`
-  background: white;
-  border-radius: 8px;
-  padding: 24px;
+  background: ${({ theme }) => theme.colors.background.paper};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  padding: ${({ theme }) => theme.spacing.lg};
   width: 100%;
   max-width: 500px;
   position: relative;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: ${({ theme }) => theme.shadows.lg};
 `;
 
 const CloseButton = styled.button`
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: ${({ theme }) => theme.spacing.md};
+  right: ${({ theme }) => theme.spacing.md};
   background: none;
   border: none;
   cursor: pointer;
-  color: #666;
-  padding: 4px;
+  color: ${({ theme }) => theme.colors.text.secondary};
+  padding: ${({ theme }) => theme.spacing.xs};
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 4px;
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
 
   &:hover {
-    background: #f5f5f5;
+    background: ${({ theme }) => theme.colors.neutral[100]};
   }
 `;
 
@@ -87,7 +87,7 @@ const Root = ({ isOpen, onClose, children }: ModalRootProps) => {
 
 const HeaderContainer = styled.div`
   position: relative;
-  margin-bottom: 24px;
+  margin-bottom: ${({ theme }) => theme.spacing.lg};
 `;
 
 const Header = ({ children }: { children: ReactNode }) => {
@@ -104,22 +104,22 @@ const Header = ({ children }: { children: ReactNode }) => {
 
 const Title = styled.h2`
   margin: 0;
-  font-size: 1.5rem;
-  color: #333;
-  padding-right: 32px;
+  font-size: ${({ theme }) => theme.typography.fontSize.xl};
+  color: ${({ theme }) => theme.colors.text.primary};
+  padding-right: ${({ theme }) => theme.spacing.lg};
 `;
 
 const Body = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: ${({ theme }) => theme.spacing.md};
 `;
 
 const Footer = styled.div`
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
-  margin-top: 24px;
+  gap: ${({ theme }) => theme.spacing.sm};
+  margin-top: ${({ theme }) => theme.spacing.lg};
 `;
 
 export const Modal = {

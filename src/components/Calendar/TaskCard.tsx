@@ -1,103 +1,76 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Edit2 } from 'lucide-react';
 import type { Task } from '../../types/task';
 import { TaskInfoModal } from './TaskInfoModal';
 
-const Card = styled.div`
-  background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
-  padding: 10px;
-  margin-bottom: 6px;
-  font-size: 0.85rem;
-  position: relative;
-  cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+const TaskCardContainer = styled.div`
+  padding: ${({ theme }) => theme.spacing.sm};
+  border: 1px solid ${({ theme }) => theme.colors.border.light};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  background: ${({ theme }) => theme.colors.background.default};
+  display: flex;
+  align-items: flex-start;
+  gap: ${({ theme }) => theme.spacing.sm};
+  transition: all 0.2s ease;
 
   &:hover {
-    background: #f8f9fa;
-    border-color: #1976d2;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    transform: translateY(-1px);
+    background: ${({ theme }) => theme.colors.neutral[50]};
+    border-color: ${({ theme }) => theme.colors.primary.main};
   }
 `;
 
-const TitleRow = styled.div`
+const TaskContent = styled.div`
+  flex: 1;
+  min-width: 0;
+`;
+
+const TaskTitle = styled.h3`
+  margin: 0 0 4px;
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+  color: ${({ theme }) => theme.colors.text.primary};
+`;
+
+const TaskDescription = styled.p`
+  margin: 0;
+  font-size: ${({ theme }) => theme.typography.fontSize.xs};
+  color: ${({ theme }) => theme.colors.text.secondary};
+  white-space: pre-wrap;
+  word-break: break-word;
+`;
+
+const TaskActions = styled.div`
   display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 6px;
-  position: relative;
+  gap: ${({ theme }) => theme.spacing.xs};
+  flex-shrink: 0;
 `;
 
-const Title = styled.div`
-  font-weight: 600;
-  color: #1976d2;
-  font-size: 0.9rem;
-  width: 100%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  transition: padding-right 0.2s;
-
-  ${TitleRow}:hover & {
-    padding-right: 32px;
-  }
-`;
-
-const Description = styled.div`
-  color: #666;
-  font-size: 0.85rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  line-height: 1.4;
-`;
-
-const Actions = styled.div`
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  gap: 4px;
-  opacity: 0;
-  transition: opacity 0.2s;
-  padding-left: 8px;
-
-  ${TitleRow}:hover & {
-    opacity: 1;
-  }
-
-  @media (max-width: 768px) {
-    display: none;
-  }
-`;
-
-const ActionButton = styled.button`
-  background: none;
+const ActionButton = styled.button<{ variant?: 'edit' | 'delete' }>`
+  padding: 6px;
   border: none;
-  padding: 4px;
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  background: ${({ theme, variant }) =>
+    variant === 'delete' ? theme.colors.error.light + '20' : theme.colors.neutral[50]};
+  color: ${({ theme, variant }) =>
+    variant === 'delete' ? theme.colors.error.main : theme.colors.text.secondary};
   cursor: pointer;
-  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 
-  &.delete {
-    color: #dc3545;
-    &:hover {
-      background: rgba(220, 53, 69, 0.1);
-    }
+  &:hover {
+    background: ${({ theme, variant }) =>
+      variant === 'delete' ? theme.colors.error.light + '40' : theme.colors.neutral[100]};
+    color: ${({ theme, variant }) =>
+      variant === 'delete' ? theme.colors.error.main : theme.colors.text.primary};
   }
 `;
 
 interface TaskCardProps {
   task: Task;
-  onDelete: (id: string) => void;
+  onDelete: (taskId: string) => void;
   onEdit: (task: Task) => void;
 }
 
@@ -115,17 +88,33 @@ export const TaskCard = ({ task, onDelete, onEdit }: TaskCardProps) => {
 
   return (
     <>
-      <Card onClick={handleClick}>
-        <TitleRow>
-          <Title title={task.title}>{task.title}</Title>
-          <Actions>
-            <ActionButton className="delete" onClick={() => onDelete(task.id)} title="Delete task">
-              <Trash2 size={14} />
-            </ActionButton>
-          </Actions>
-        </TitleRow>
-        {task.description && <Description title={task.description}>{task.description}</Description>}
-      </Card>
+      <TaskCardContainer onClick={handleClick}>
+        <TaskContent>
+          <TaskTitle>{task.title}</TaskTitle>
+          {task.description && <TaskDescription>{task.description}</TaskDescription>}
+        </TaskContent>
+        <TaskActions>
+          <ActionButton
+            onClick={e => {
+              e.stopPropagation();
+              onEdit(task);
+            }}
+            title="Edit task"
+          >
+            <Edit2 size={14} />
+          </ActionButton>
+          <ActionButton
+            variant="delete"
+            onClick={e => {
+              e.stopPropagation();
+              onDelete(task.id);
+            }}
+            title="Delete task"
+          >
+            <Trash2 size={14} />
+          </ActionButton>
+        </TaskActions>
+      </TaskCardContainer>
       {showInfoModal && (
         <TaskInfoModal
           task={task}

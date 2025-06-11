@@ -1,7 +1,12 @@
+import { ThemeProvider } from './styles/ThemeProvider';
 import { Calendar } from './components/Calendar/Calendar';
 
 const App = () => {
-  return <Calendar />;
+  return (
+    <ThemeProvider>
+      <Calendar />
+    </ThemeProvider>
+  );
 };
 
 export default App;

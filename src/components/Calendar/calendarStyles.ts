@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const CalendarWrapper = styled.div`
   width: 100vw;
   height: 100vh;
-  background: #fafbfc;
+  background: ${({ theme }) => theme.colors.background.default};
   border-radius: 0;
   box-shadow: none;
   padding: 0;
@@ -16,8 +16,8 @@ export const ControlsBar = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 2rem 2rem 1.2rem 2rem;
-  background: #fff;
-  border-bottom: 1px solid #e0e0e0;
+  background: ${({ theme }) => theme.colors.background.paper};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border.light};
 `;
 
 export const NavGroup = styled.div`
@@ -27,9 +27,9 @@ export const NavGroup = styled.div`
 `;
 
 export const NavButton = styled.button`
-  background: #f4f5f7;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
+  background: ${({ theme }) => theme.colors.neutral[100]};
+  border: 1px solid ${({ theme }) => theme.colors.border.light};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
   font-size: 1.4rem;
   width: 2.2rem;
   height: 2.2rem;
@@ -37,20 +37,19 @@ export const NavButton = styled.button`
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: #444;
-  transition:
-    background 0.2s,
-    box-shadow 0.2s;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  color: ${({ theme }) => theme.colors.text.primary};
+  transition: all 0.2s ease;
+  box-shadow: ${({ theme }) => theme.shadows.sm};
+
   &:hover {
-    background: #e0e0e0;
+    background: ${({ theme }) => theme.colors.neutral[200]};
   }
 `;
 
 export const MonthTitle = styled.h2`
-  color: #222;
+  color: ${({ theme }) => theme.colors.text.primary};
   font-size: 1.6rem;
-  font-weight: 500;
+  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
   margin: 0;
   letter-spacing: 1px;
   text-align: center;
@@ -63,23 +62,22 @@ export const ToggleGroup = styled.div`
 `;
 
 export const ToggleButton = styled.button<{ selected?: boolean }>`
-  background: ${({ selected }) => (selected ? '#f4f5f7' : 'transparent')};
-  color: #444;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
+  background: ${({ theme, selected }) => (selected ? theme.colors.neutral[100] : 'transparent')};
+  color: ${({ theme }) => theme.colors.text.primary};
+  border: 1px solid ${({ theme }) => theme.colors.border.light};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
   padding: 0.4rem 1.2rem;
-  font-size: 1rem;
-  font-weight: 500;
+  font-size: ${({ theme }) => theme.typography.fontSize.md};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  transition:
-    background 0.2s,
-    color 0.2s;
-  box-shadow: ${({ selected }) => (selected ? '0 1px 2px rgba(0,0,0,0.04)' : 'none')};
+  transition: all 0.2s ease;
+  box-shadow: ${({ theme, selected }) => (selected ? theme.shadows.sm : 'none')};
+
   &:hover {
-    background: #e0e0e0;
+    background: ${({ theme }) => theme.colors.neutral[200]};
   }
 `;
 
@@ -89,48 +87,49 @@ export const Grid = styled.div`
   grid-template-columns: repeat(7, 1fr);
   grid-template-rows: 40px repeat(6, 1fr);
   gap: 1px;
-  background: #e0e0e0;
-  border-radius: 0 0 8px 8px;
+  background: ${({ theme }) => theme.colors.border.light};
+  border-radius: 0 0 ${({ theme }) => theme.borderRadius.md} ${({ theme }) => theme.borderRadius.md};
   overflow: hidden;
 `;
 
 export const DayHeader = styled.div`
-  background: #f4f5f7;
-  color: #888;
-  font-weight: 600;
-  font-size: 1rem;
+  background: ${({ theme }) => theme.colors.neutral[100]};
+  color: ${({ theme }) => theme.colors.text.secondary};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.semibold};
+  font-size: ${({ theme }) => theme.typography.fontSize.md};
   display: flex;
   align-items: center;
   justify-content: center;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border.light};
 `;
 
 export const DayCell = styled.div<{ isToday?: boolean; isOutOfMonth?: boolean }>`
-  background: #fff;
-  min-height: 90px;
-  box-sizing: border-box;
+  background: ${({ theme }) => theme.colors.background.default};
+  border: 1px solid ${({ theme }) => theme.colors.border.light};
+  color: ${({ theme, isOutOfMonth }) =>
+    isOutOfMonth ? theme.colors.text.disabled : theme.colors.text.primary};
   position: relative;
+  min-height: 90px;
   padding: 0.7rem 0.5rem 0.5rem 0.7rem;
   font-size: 1rem;
-  border-right: 1px solid #e0e0e0;
-  border-bottom: 1px solid #e0e0e0;
-  color: ${({ isOutOfMonth }) => (isOutOfMonth ? '#bbb' : '#222')};
+  border-right: 1px solid ${({ theme }) => theme.colors.border.light};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border.light};
   opacity: ${({ isOutOfMonth }) => (isOutOfMonth ? 0.6 : 1)};
-  font-weight: ${({ isToday }) => (isToday ? 700 : 400)};
-  box-shadow: ${({ isToday }) => (isToday ? 'inset 0 0 0 2px #ff9800' : 'none')};
-  border-radius: ${({ isToday }) => (isToday ? '8px' : '0')};
+  font-weight: ${({ theme, isToday }) =>
+    isToday ? theme.typography.fontWeight.bold : theme.typography.fontWeight.regular};
+  border-radius: 8px;
   z-index: ${({ isToday }) => (isToday ? 1 : 0)};
-  transition:
-    box-shadow 0.2s,
-    border-radius 0.2s;
-  &:hover {
-    background: #f4f5f7;
-    cursor: pointer;
-  }
+  transition: all 0.2s ease;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   min-width: 0;
+
+  &:hover {
+    background: ${({ theme }) => theme.colors.neutral[50]};
+    border-color: ${({ theme }) => theme.colors.primary.main};
+    cursor: pointer;
+  }
 `;
 
 export const AddButton = styled.button`
@@ -140,8 +139,8 @@ export const AddButton = styled.button`
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: #1976d2;
-  color: white;
+  background: ${({ theme }) => theme.colors.primary.main};
+  color: ${({ theme }) => theme.colors.primary.contrast};
   border: none;
   display: flex;
   align-items: center;
@@ -150,10 +149,10 @@ export const AddButton = styled.button`
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.2s;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: ${({ theme }) => theme.shadows.sm};
 
   &:hover {
-    background: #1565c0;
+    background: ${({ theme }) => theme.colors.primary.dark};
   }
 
   ${DayCell}:hover & {
@@ -171,10 +170,16 @@ export const DayHeaderRow = styled.div`
   overflow: hidden;
 `;
 
-export const DayNumber = styled.div<{ isToday?: boolean; isOutOfMonth?: boolean }>`
+export const DayNumber = styled.div<{ isToday: boolean; isOutOfMonth: boolean }>`
   font-size: 1rem;
-  font-weight: ${({ isToday }) => (isToday ? 700 : 500)};
-  color: ${({ isToday, isOutOfMonth }) => (isToday ? '#ff9800' : isOutOfMonth ? '#bbb' : '#888')};
+  font-weight: ${({ theme, isToday }) =>
+    isToday ? theme.typography.fontWeight.bold : theme.typography.fontWeight.medium};
+  color: ${({ theme, isToday, isOutOfMonth }) =>
+    isToday
+      ? theme.colors.warning.main
+      : isOutOfMonth
+        ? theme.colors.text.disabled
+        : theme.colors.text.secondary};
   flex-shrink: 0;
 `;
 
@@ -187,6 +192,64 @@ export const HolidayList = styled.div`
   min-width: 0;
   width: 100%;
   overflow: hidden;
+`;
+
+export const HolidayContainer = styled.div`
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 4px;
+`;
+
+export const HolidayName = styled.div`
+  font-size: ${({ theme }) => theme.typography.fontSize.xs};
+  color: ${({ theme }) => theme.colors.holiday.text};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  background: ${({ theme }) => theme.colors.holiday.background};
+  border: 1px solid ${({ theme }) => theme.colors.holiday.border};
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  cursor: default;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-bottom: ${({ theme }) => theme.spacing.sm};
+`;
+
+export const MoreBadge = styled.div`
+  font-size: ${({ theme }) => theme.typography.fontSize.xs};
+  color: ${({ theme }) => theme.colors.holiday.text};
+  background: ${({ theme }) => theme.colors.holiday.background};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
+  margin-left: 0.2rem;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid ${({ theme }) => theme.colors.holiday.border};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+  box-sizing: border-box;
+`;
+
+export const PopoverContent = styled.div`
+  background: ${({ theme }) => theme.colors.background.popover};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  box-shadow: ${({ theme }) => theme.shadows.popover};
+  padding: 1rem 1.2rem;
+  min-width: 220px;
+  max-width: 320px;
+  max-height: 60vh;
+  overflow-y: auto;
+  z-index: ${({ theme }) => theme.zIndex.popover};
+`;
+
+export const PopoverTitle = styled.div`
+  font-size: ${({ theme }) => theme.typography.fontSize.md};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.semibold};
+  margin-bottom: 0.7rem;
+  color: ${({ theme }) => theme.colors.text.primary};
 `;
 
 export const TaskList = styled.div`
@@ -208,65 +271,7 @@ export const TaskList = styled.div`
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #ddd;
+    background: ${({ theme }) => theme.colors.border.main};
     border-radius: 2px;
   }
-`;
-
-export const HolidayContainer = styled.div`
-  display: flex;
-  align-items: center;
-  min-width: 0;
-  gap: 4px;
-`;
-
-export const HolidayName = styled.div`
-  font-size: 0.8rem;
-  color: #1976d2;
-  font-weight: 500;
-  padding: 0.1rem 0.3rem;
-  border-radius: 3px;
-  background: #e3f2fd;
-  border: 1px solid #90caf9;
-  max-width: 100%;
-  min-width: 0;
-  box-sizing: border-box;
-  cursor: default;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  margin-bottom: 8px;
-`;
-
-export const MoreBadge = styled.div`
-  font-size: 0.8rem;
-  color: #1976d2;
-  background: #e3f2fd;
-  border-radius: 3px;
-  padding: 0.1rem 0.3rem;
-  margin-left: 0.2rem;
-  cursor: pointer;
-  user-select: none;
-  border: 1px solid #90caf9;
-  font-weight: 500;
-  box-sizing: border-box;
-`;
-
-export const PopoverContent = styled.div`
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15);
-  padding: 1rem 1.2rem;
-  min-width: 220px;
-  max-width: 320px;
-  max-height: 60vh;
-  overflow-y: auto;
-  z-index: 1000;
-`;
-
-export const PopoverTitle = styled.div`
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 0.7rem;
-  color: #222;
 `;

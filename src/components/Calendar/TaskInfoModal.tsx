@@ -10,23 +10,23 @@ const ModalOverlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: ${({ theme }) => theme.colors.overlay};
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: ${({ theme }) => theme.zIndex.modal};
 `;
 
 const ModalContent = styled.div`
-  background: white;
-  border-radius: 8px;
+  background: ${({ theme }) => theme.colors.background.paper};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
   padding: 24px;
   width: 90%;
   max-width: 500px;
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: ${({ theme }) => theme.shadows.modal};
 `;
 
 const Header = styled.div`
@@ -39,17 +39,19 @@ const Header = styled.div`
 
 const Title = styled.h2`
   margin: 0;
-  font-size: 1.25rem;
-  color: #333;
+  font-size: ${({ theme }) => theme.typography.fontSize.lg};
+  color: ${({ theme }) => theme.colors.text.primary};
   flex: 1;
 `;
 
-const ActionButton = styled.button<{ $variant?: 'edit' | 'delete' }>`
+const ActionButton = styled.button<{ variant?: 'edit' | 'delete' }>`
   padding: 6px;
   border: none;
-  border-radius: 6px;
-  background: ${({ $variant }) => ($variant === 'delete' ? '#fee2e2' : 'white')};
-  color: ${({ $variant }) => ($variant === 'delete' ? '#dc2626' : '#666')};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  background: ${({ theme, variant }) =>
+    variant === 'delete' ? theme.colors.error.light + '20' : theme.colors.neutral[50]};
+  color: ${({ theme, variant }) =>
+    variant === 'delete' ? theme.colors.error.main : theme.colors.text.secondary};
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -57,8 +59,10 @@ const ActionButton = styled.button<{ $variant?: 'edit' | 'delete' }>`
   transition: all 0.2s ease;
 
   &:hover {
-    background: ${({ $variant }) => ($variant === 'delete' ? '#fecaca' : '#f5f5f5')};
-    color: ${({ $variant }) => ($variant === 'delete' ? '#dc2626' : '#333')};
+    background: ${({ theme, variant }) =>
+      variant === 'delete' ? theme.colors.error.light + '40' : theme.colors.neutral[100]};
+    color: ${({ theme, variant }) =>
+      variant === 'delete' ? theme.colors.error.main : theme.colors.text.primary};
   }
 `;
 
@@ -77,8 +81,8 @@ const BottomRow = styled.div`
 `;
 
 const DateText = styled.div`
-  color: #666;
-  font-size: 0.875rem;
+  color: ${({ theme }) => theme.colors.text.secondary};
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
   margin-right: auto;
 `;
 
@@ -91,89 +95,89 @@ const Controls = styled.div`
 const EditableTitle = styled.div`
   cursor: pointer;
   padding: 6px 12px;
-  border-radius: 4px;
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
   min-height: 36px;
   display: flex;
   align-items: center;
   width: 100%;
 
   &:hover {
-    background: #f5f5f5;
+    background: ${({ theme }) => theme.colors.neutral[100]};
   }
 `;
 
 const TitleInput = styled.input`
   width: 100%;
-  font-size: 1.25rem;
+  font-size: ${({ theme }) => theme.typography.fontSize.md};
   padding: 6px 12px;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
+  border: 1px solid ${({ theme }) => theme.colors.border.light};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
   font-family: inherit;
   font-weight: inherit;
-  color: #333;
-  background: white;
+  color: ${({ theme }) => theme.colors.text.primary};
+  background: ${({ theme }) => theme.colors.background.paper};
   z-index: 1;
   min-height: 36px;
   line-height: 1.5;
 
   &::placeholder {
-    color: #999;
+    color: ${({ theme }) => theme.colors.text.disabled};
   }
 
   &:focus {
     outline: none;
-    border-color: #1976d2;
-    box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+    border-color: ${({ theme }) => theme.colors.primary.main};
+    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.primary.light + '40'};
   }
 `;
 
 const EditableDescription = styled.div`
   cursor: pointer;
   padding: 8px 12px;
-  border-radius: 4px;
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
   min-height: 100px;
-  color: #666;
-  font-size: 1rem;
+  color: ${({ theme }) => theme.colors.text.secondary};
+  font-size: ${({ theme }) => theme.typography.fontSize.md};
   line-height: 1.5;
   white-space: pre-wrap;
   word-break: break-word;
 
   &:hover {
-    background: #f5f5f5;
+    background: ${({ theme }) => theme.colors.neutral[100]};
   }
 `;
 
 const DescriptionTextarea = styled.textarea`
   width: 100%;
-  font-size: 1rem;
+  font-size: ${({ theme }) => theme.typography.fontSize.md};
   padding: 8px 12px;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
+  border: 1px solid ${({ theme }) => theme.colors.border.light};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
   font-family: inherit;
-  color: #333;
-  background: white;
+  color: ${({ theme }) => theme.colors.text.primary};
+  background: ${({ theme }) => theme.colors.background.paper};
   resize: none;
   overflow: hidden;
   min-height: 100px;
   line-height: 1.5;
 
   &::placeholder {
-    color: #999;
+    color: ${({ theme }) => theme.colors.text.disabled};
   }
 
   &:focus {
     outline: none;
-    border-color: #1976d2;
-    box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+    border-color: ${({ theme }) => theme.colors.primary.main};
+    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.primary.light + '40'};
   }
 `;
 
 const SaveButton = styled.button`
   padding: 6px;
   border: none;
-  border-radius: 6px;
-  background: #e6f4ea;
-  color: #1e7e34;
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  background: ${({ theme }) => theme.colors.success.light + '20'};
+  color: ${({ theme }) => theme.colors.success.main};
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -182,12 +186,12 @@ const SaveButton = styled.button`
   margin-left: auto;
 
   &:hover {
-    background: #d4edda;
+    background: ${({ theme }) => theme.colors.success.light + '80'};
   }
 
   &:disabled {
-    background: #f5f5f5;
-    color: #999;
+    background: ${({ theme }) => theme.colors.neutral[100]};
+    color: ${({ theme }) => theme.colors.text.disabled};
     cursor: not-allowed;
   }
 `;
@@ -199,16 +203,16 @@ const CloseButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
-  color: #666;
+  color: ${({ theme }) => theme.colors.text.secondary};
   padding: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 4px;
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
   z-index: 2;
 
   &:hover {
-    background: #f5f5f5;
+    background: ${({ theme }) => theme.colors.neutral[100]};
   }
 `;
 
@@ -386,7 +390,7 @@ export const TaskInfoModal = ({ task, onClose, onDelete, onEdit }: TaskInfoModal
                   </SaveButton>
                 )}
                 {!isNewTask && (
-                  <ActionButton $variant="delete" onClick={handleDelete} title="Delete task">
+                  <ActionButton variant="delete" onClick={handleDelete} title="Delete task">
                     <Trash2 size={16} />
                   </ActionButton>
                 )}

@@ -6,75 +6,75 @@ import { Modal } from '../Modal/Modal';
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: ${({ theme }) => theme.spacing.md};
 `;
 
 const FormGroup = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: ${({ theme }) => theme.spacing.sm};
 `;
 
 const Label = styled.label`
-  font-size: 0.9rem;
-  color: #666;
-  font-weight: 500;
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  color: ${({ theme }) => theme.colors.text.secondary};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
 `;
 
 const Input = styled.input`
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
+  padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.md}`};
+  border: 1px solid ${({ theme }) => theme.colors.border.light};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  font-size: ${({ theme }) => theme.typography.fontSize.md};
   font-family: inherit;
   width: 100%;
   box-sizing: border-box;
-  background: white;
-  color: #333;
+  background: ${({ theme }) => theme.colors.background.default};
+  color: ${({ theme }) => theme.colors.text.primary};
 
   &:focus {
     outline: none;
-    border-color: #1976d2;
+    border-color: ${({ theme }) => theme.colors.primary.main};
   }
 `;
 
 const TextArea = styled.textarea`
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
+  padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.md}`};
+  border: 1px solid ${({ theme }) => theme.colors.border.light};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  font-size: ${({ theme }) => theme.typography.fontSize.md};
   font-family: inherit;
   width: 100%;
   box-sizing: border-box;
   min-height: 100px;
   resize: vertical;
-  background: white;
-  color: #333;
+  background: ${({ theme }) => theme.colors.background.default};
+  color: ${({ theme }) => theme.colors.text.primary};
   line-height: 1.5;
 
   &:focus {
     outline: none;
-    border-color: #1976d2;
+    border-color: ${({ theme }) => theme.colors.primary.main};
   }
 `;
 
 const SubmitButton = styled.button`
-  background: #1976d2;
-  color: white;
+  background: ${({ theme }) => theme.colors.primary.main};
+  color: ${({ theme }) => theme.colors.primary.contrast};
   border: none;
-  padding: 12px 24px;
-  border-radius: 4px;
-  font-size: 1rem;
-  font-weight: 500;
+  padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.lg}`};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  font-size: ${({ theme }) => theme.typography.fontSize.md};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
   cursor: pointer;
   transition: background 0.2s;
 
   &:hover {
-    background: #1565c0;
+    background: ${({ theme }) => theme.colors.primary.dark};
   }
 
   &:disabled {
-    background: #ccc;
+    background: ${({ theme }) => theme.colors.neutral[400]};
     cursor: not-allowed;
   }
 `;

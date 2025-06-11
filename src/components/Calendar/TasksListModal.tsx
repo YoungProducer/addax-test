@@ -11,21 +11,21 @@ const ModalOverlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: ${({ theme }) => theme.colors.overlay};
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: ${({ theme }) => theme.zIndex.modal};
 `;
 
 const ModalContent = styled.div`
-  background: white;
-  border-radius: 8px;
+  background: ${({ theme }) => theme.colors.background.paper};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
   padding: 24px;
   width: 100%;
   max-width: 500px;
   position: relative;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: ${({ theme }) => theme.shadows.modal};
   max-height: 80vh;
   display: flex;
   flex-direction: column;
@@ -42,8 +42,8 @@ const Header = styled.div`
 
 const Title = styled.h2`
   margin: 0;
-  font-size: 1.5rem;
-  color: #333;
+  font-size: ${({ theme }) => theme.typography.fontSize.xl};
+  color: ${({ theme }) => theme.colors.text.primary};
 `;
 
 const CloseButton = styled.button`
@@ -53,15 +53,15 @@ const CloseButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
-  color: #666;
+  color: ${({ theme }) => theme.colors.text.secondary};
   padding: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 4px;
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
 
   &:hover {
-    background: #f5f5f5;
+    background: ${({ theme }) => theme.colors.neutral[100]};
   }
 `;
 
@@ -71,22 +71,22 @@ const ButtonWrapper = styled.div`
 `;
 
 const AddButton = styled.button`
-  background: #1976d2;
-  color: white;
+  background: ${({ theme }) => theme.colors.primary.main};
+  color: ${({ theme }) => theme.colors.primary.contrast};
   border: none;
   padding: 8px 16px;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  font-weight: 500;
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 6px;
-  transition: background 0.2s;
+  transition: all 0.2s ease;
   width: fit-content;
 
   &:hover {
-    background: #1565c0;
+    background: ${({ theme }) => theme.colors.primary.dark};
   }
 `;
 
@@ -107,16 +107,16 @@ const TasksList = styled.div`
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #ddd;
+    background: ${({ theme }) => theme.colors.border.main};
     border-radius: 2px;
   }
 `;
 
 const TaskItem = styled.div`
   padding: 12px;
-  border-radius: 8px;
-  background: white;
-  border: 1px solid #e0e0e0;
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  background: ${({ theme }) => theme.colors.background.paper};
+  border: 1px solid ${({ theme }) => theme.colors.border.light};
   display: flex;
   align-items: flex-start;
   gap: 12px;
@@ -124,8 +124,8 @@ const TaskItem = styled.div`
   cursor: pointer;
 
   &:hover {
-    border-color: #1976d2;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-color: ${({ theme }) => theme.colors.primary.main};
+    box-shadow: ${({ theme }) => theme.shadows.sm};
   }
 `;
 
@@ -138,13 +138,13 @@ const TaskTitle = styled.h3`
   margin: 0 0 4px;
   font-size: 16px;
   font-weight: 500;
-  color: #333;
+  color: ${({ theme }) => theme.colors.text.primary};
 `;
 
 const TaskDescription = styled.p`
   margin: 0;
   font-size: 14px;
-  color: #666;
+  color: ${({ theme }) => theme.colors.text.secondary};
   white-space: pre-wrap;
   word-break: break-word;
 `;
@@ -155,12 +155,14 @@ const TaskActions = styled.div`
   flex-shrink: 0;
 `;
 
-const ActionButton = styled.button<{ $variant?: 'edit' | 'delete' }>`
+const ActionButton = styled.button<{ variant?: 'edit' | 'delete' }>`
   padding: 6px;
   border: none;
-  border-radius: 6px;
-  background: ${({ $variant }) => ($variant === 'delete' ? '#fee2e2' : 'white')};
-  color: ${({ $variant }) => ($variant === 'delete' ? '#dc2626' : '#666')};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  background: ${({ theme, variant }) =>
+    variant === 'delete' ? theme.colors.error.light + '20' : theme.colors.neutral[50]};
+  color: ${({ theme, variant }) =>
+    variant === 'delete' ? theme.colors.error.main : theme.colors.text.secondary};
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -168,14 +170,16 @@ const ActionButton = styled.button<{ $variant?: 'edit' | 'delete' }>`
   transition: all 0.2s ease;
 
   &:hover {
-    background: ${({ $variant }) => ($variant === 'delete' ? '#fecaca' : '#f5f5f5')};
-    color: ${({ $variant }) => ($variant === 'delete' ? '#dc2626' : '#333')};
+    background: ${({ theme, variant }) =>
+      variant === 'delete' ? theme.colors.error.light + '40' : theme.colors.neutral[100]};
+    color: ${({ theme, variant }) =>
+      variant === 'delete' ? theme.colors.error.main : theme.colors.text.primary};
   }
 `;
 
 const EmptyStateMessage = styled.div`
   text-align: center;
-  color: #666;
+  color: ${({ theme }) => theme.colors.text.secondary};
   padding: 20px;
 `;
 
@@ -263,7 +267,7 @@ export const TasksListModal = ({
                 </TaskContent>
                 <TaskActions>
                   <ActionButton
-                    $variant="delete"
+                    variant="delete"
                     onClick={() => onDeleteTask(task.id)}
                     title="Delete task"
                   >
