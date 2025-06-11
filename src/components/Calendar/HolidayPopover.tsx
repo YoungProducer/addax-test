@@ -10,11 +10,7 @@ export const HolidayPopover = ({ date, holidays }: HolidayPopoverProps) => (
   <PopoverContent>
     <PopoverTitle>Holidays for {date.toLocaleDateString()}</PopoverTitle>
     {holidays.map(holiday => (
-      <HolidayName
-        key={holiday.name}
-        title={holiday.localName}
-        style={{ marginBottom: 8, cursor: 'default' }}
-      >
+      <HolidayName key={holiday.name} title={holiday.localName}>
         {holiday.localName}
       </HolidayName>
     ))}

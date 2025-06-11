@@ -133,6 +133,34 @@ export const DayCell = styled.div<{ isToday?: boolean; isOutOfMonth?: boolean }>
   min-width: 0;
 `;
 
+export const AddButton = styled.button`
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #1976d2;
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    background: #1565c0;
+  }
+
+  ${DayCell}:hover & {
+    opacity: 1;
+  }
+`;
+
 export const DayHeaderRow = styled.div`
   display: flex;
   align-items: center;
@@ -161,6 +189,30 @@ export const HolidayList = styled.div`
   overflow: hidden;
 `;
 
+export const TaskList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+  overflow-y: auto;
+  max-height: calc(100% - 40px);
+  padding-right: 4px;
+  padding-top: 1px;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #ddd;
+    border-radius: 2px;
+  }
+`;
+
 export const HolidayContainer = styled.div`
   display: flex;
   align-items: center;
@@ -179,10 +231,11 @@ export const HolidayName = styled.div`
   max-width: 100%;
   min-width: 0;
   box-sizing: border-box;
-  cursor: pointer;
+  cursor: default;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  margin-bottom: 8px;
 `;
 
 export const MoreBadge = styled.div`
