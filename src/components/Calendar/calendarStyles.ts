@@ -150,6 +150,7 @@ export const AddButton = styled.button`
   opacity: 0;
   transition: opacity 0.2s;
   box-shadow: ${({ theme }) => theme.shadows.sm};
+  z-index: 1;
 
   &:hover {
     background: ${({ theme }) => theme.colors.primary.dark};

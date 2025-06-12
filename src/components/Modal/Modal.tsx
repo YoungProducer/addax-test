@@ -1,5 +1,4 @@
-import { createContext, useContext } from 'react';
-import type { ReactNode } from 'react';
+import { createContext, useContext, type ReactNode } from 'react';
 import styled from 'styled-components';
 import { X } from 'lucide-react';
 import { Portal } from '../Portal/Portal';
@@ -23,7 +22,7 @@ const ModalOverlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: ${({ theme }) => theme.colors.overlay};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -33,22 +32,40 @@ const ModalOverlay = styled.div`
 const ModalContent = styled.div`
   background: ${({ theme }) => theme.colors.background.paper};
   border-radius: ${({ theme }) => theme.borderRadius.md};
-  padding: ${({ theme }) => theme.spacing.lg};
+  padding: 24px;
   width: 100%;
   max-width: 500px;
   position: relative;
-  box-shadow: ${({ theme }) => theme.shadows.lg};
+  box-shadow: ${({ theme }) => theme.shadows.modal};
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`;
+
+const Header = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  padding-right: 40px;
+`;
+
+const Title = styled.h2`
+  margin: 0;
+  font-size: ${({ theme }) => theme.typography.fontSize.xl};
+  color: ${({ theme }) => theme.colors.text.primary};
 `;
 
 const CloseButton = styled.button`
   position: absolute;
-  top: ${({ theme }) => theme.spacing.md};
-  right: ${({ theme }) => theme.spacing.md};
+  top: -8px;
+  right: -8px;
   background: none;
   border: none;
   cursor: pointer;
   color: ${({ theme }) => theme.colors.text.secondary};
-  padding: ${({ theme }) => theme.spacing.xs};
+  padding: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -57,6 +74,32 @@ const CloseButton = styled.button`
   &:hover {
     background: ${({ theme }) => theme.colors.neutral[100]};
   }
+`;
+
+const Body = styled.div`
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 4px;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => theme.colors.border.main};
+    border-radius: 2px;
+  }
+`;
+
+const Footer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
 `;
 
 interface ModalRootProps {
@@ -68,16 +111,10 @@ interface ModalRootProps {
 const Root = ({ isOpen, onClose, children }: ModalRootProps) => {
   if (!isOpen) return null;
 
-  const handleOverlayClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onClose();
-  };
-
   return (
     <ModalContext.Provider value={{ isOpen, onClose }}>
       <Portal>
-        <ModalOverlay onClick={handleOverlayClick}>
+        <ModalOverlay>
           <ModalContent onClick={e => e.stopPropagation()}>{children}</ModalContent>
         </ModalOverlay>
       </Portal>
@@ -85,47 +122,53 @@ const Root = ({ isOpen, onClose, children }: ModalRootProps) => {
   );
 };
 
-const HeaderContainer = styled.div`
-  position: relative;
-  margin-bottom: ${({ theme }) => theme.spacing.lg};
-`;
+interface ModalHeaderProps {
+  children: ReactNode;
+  showCloseButton?: boolean;
+}
 
-const Header = ({ children }: { children: ReactNode }) => {
+const HeaderComponent = ({ children, showCloseButton = true }: ModalHeaderProps) => {
   const { onClose } = useModalContext();
   return (
-    <HeaderContainer>
-      <CloseButton onClick={onClose}>
-        <X size={20} />
-      </CloseButton>
+    <Header>
       {children}
-    </HeaderContainer>
+      {showCloseButton && (
+        <CloseButton onClick={onClose} title="Close">
+          <X size={20} />
+        </CloseButton>
+      )}
+    </Header>
   );
 };
 
-const Title = styled.h2`
-  margin: 0;
-  font-size: ${({ theme }) => theme.typography.fontSize.xl};
-  color: ${({ theme }) => theme.colors.text.primary};
-  padding-right: ${({ theme }) => theme.spacing.lg};
-`;
+interface ModalTitleProps {
+  children: ReactNode;
+}
 
-const Body = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.md};
-`;
+const TitleComponent = ({ children }: ModalTitleProps) => {
+  return <Title>{children}</Title>;
+};
 
-const Footer = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  gap: ${({ theme }) => theme.spacing.sm};
-  margin-top: ${({ theme }) => theme.spacing.lg};
-`;
+interface ModalBodyProps {
+  children: ReactNode;
+}
+
+const BodyComponent = ({ children }: ModalBodyProps) => {
+  return <Body>{children}</Body>;
+};
+
+interface ModalFooterProps {
+  children: ReactNode;
+}
+
+const FooterComponent = ({ children }: ModalFooterProps) => {
+  return <Footer>{children}</Footer>;
+};
 
 export const Modal = {
   Root,
-  Header,
-  Title,
-  Body,
-  Footer,
+  Header: HeaderComponent,
+  Title: TitleComponent,
+  Body: BodyComponent,
+  Footer: FooterComponent,
 };

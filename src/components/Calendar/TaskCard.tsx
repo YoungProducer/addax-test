@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { Trash2, Edit2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import type { Task } from '../../types/task';
 import { TaskInfoModal } from './TaskInfoModal';
 
@@ -30,14 +30,6 @@ const TaskTitle = styled.h3`
   font-size: ${({ theme }) => theme.typography.fontSize.sm};
   font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
   color: ${({ theme }) => theme.colors.text.primary};
-`;
-
-const TaskDescription = styled.p`
-  margin: 0;
-  font-size: ${({ theme }) => theme.typography.fontSize.xs};
-  color: ${({ theme }) => theme.colors.text.secondary};
-  white-space: pre-wrap;
-  word-break: break-word;
 `;
 
 const TaskActions = styled.div`
@@ -71,10 +63,9 @@ const ActionButton = styled.button<{ variant?: 'edit' | 'delete' }>`
 interface TaskCardProps {
   task: Task;
   onDelete: (taskId: string) => void;
-  onEdit: (task: Task) => void;
 }
 
-export const TaskCard = ({ task, onDelete, onEdit }: TaskCardProps) => {
+export const TaskCard = ({ task, onDelete }: TaskCardProps) => {
   const [showInfoModal, setShowInfoModal] = useState(false);
 
   const handleClick = (e: React.MouseEvent) => {
@@ -91,18 +82,8 @@ export const TaskCard = ({ task, onDelete, onEdit }: TaskCardProps) => {
       <TaskCardContainer onClick={handleClick}>
         <TaskContent>
           <TaskTitle>{task.title}</TaskTitle>
-          {task.description && <TaskDescription>{task.description}</TaskDescription>}
         </TaskContent>
         <TaskActions>
-          <ActionButton
-            onClick={e => {
-              e.stopPropagation();
-              onEdit(task);
-            }}
-            title="Edit task"
-          >
-            <Edit2 size={14} />
-          </ActionButton>
           <ActionButton
             variant="delete"
             onClick={e => {
@@ -115,14 +96,7 @@ export const TaskCard = ({ task, onDelete, onEdit }: TaskCardProps) => {
           </ActionButton>
         </TaskActions>
       </TaskCardContainer>
-      {showInfoModal && (
-        <TaskInfoModal
-          task={task}
-          onClose={() => setShowInfoModal(false)}
-          onDelete={onDelete}
-          onEdit={onEdit}
-        />
-      )}
+      {showInfoModal && <TaskInfoModal task={task} onClose={() => setShowInfoModal(false)} />}
     </>
   );
 };

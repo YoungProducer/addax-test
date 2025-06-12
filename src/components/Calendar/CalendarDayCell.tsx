@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Popover } from 'react-tiny-popover';
 import { Plus } from 'lucide-react';
+import { useDrop } from 'react-dnd';
 import {
   DayCell,
   DayHeaderRow,
@@ -12,14 +13,13 @@ import {
   PopoverTitle,
   HolidayContainer,
   AddButton,
-  TaskList,
 } from './calendarStyles';
-import { TaskCard } from './TaskCard';
+import { DroppableTaskList } from './DroppableTaskList';
 import { TasksListModal } from './TasksListModal';
 import { TaskInfoModal } from './TaskInfoModal';
 import type { Holiday } from '../../services/holidays';
 import type { Task } from '../../types/task';
-import { getTasksForDate, deleteTask } from '../../services/tasks';
+import { useTasks } from '../../contexts/TasksContext';
 
 interface CalendarDayCellProps {
   date: Date;
@@ -44,21 +44,29 @@ export const CalendarDayCell = ({
 }: CalendarDayCellProps) => {
   const [showTasksListModal, setShowTasksListModal] = useState(false);
   const [showNewTaskModal, setShowNewTaskModal] = useState(false);
-  const [tasks, setTasks] = useState<Task[]>(() => getTasksForDate(date));
+  const cellRef = useRef<HTMLDivElement>(null);
+  const { getTasksForDate, moveTask, deleteTask, reorderTasks } = useTasks();
+  const tasks = getTasksForDate(date);
+
+  const [{ isOver }, drop] = useDrop({
+    accept: 'TASK',
+    drop: (item: { type: string; index: number; id: string; task: Task }) => {
+      // If the task is from a different date, move it to this date
+      const taskDate = new Date(item.task.date);
+      if (taskDate.toDateString() !== date.toDateString()) {
+        moveTask(item.id, date);
+      }
+    },
+    collect: monitor => ({
+      isOver: monitor.isOver({ shallow: true }),
+    }),
+  });
+
+  // Apply the drop ref to our cell ref
+  drop(cellRef);
 
   const showHoliday = holidays[0];
   const moreCount = holidays.length > 1 ? holidays.length - 1 : 0;
-
-  const handleUpdateTask = (task: Task) => {
-    const updatedTasks = tasks.map(t => (t.id === task.id ? task : t));
-    localStorage.setItem('calendar_tasks', JSON.stringify(updatedTasks));
-    setTasks(updatedTasks);
-  };
-
-  const handleDeleteTask = (taskId: string) => {
-    deleteTask(taskId);
-    setTasks(prev => prev.filter(task => task.id !== taskId));
-  };
 
   const handleCellClick = (e: React.MouseEvent) => {
     if ((e.target as HTMLElement).closest('button')) {
@@ -67,83 +75,83 @@ export const CalendarDayCell = ({
     setShowTasksListModal(true);
   };
 
-  const handleAddTask = (newTask: Task) => {
-    const updatedTasks = [...tasks, newTask];
-    localStorage.setItem('calendar_tasks', JSON.stringify(updatedTasks));
-    setTasks(updatedTasks);
-    setShowNewTaskModal(false);
+  const handleDeleteTask = (taskId: string) => {
+    deleteTask(taskId);
+  };
+
+  const handleReorderTasks = (dragIndex: number, hoverIndex: number) => {
+    reorderTasks(date, dragIndex, hoverIndex);
   };
 
   return (
-    <DayCell isToday={isToday} isOutOfMonth={isOutOfMonth} onClick={handleCellClick}>
+    <DayCell
+      ref={cellRef}
+      isToday={isToday}
+      isOutOfMonth={isOutOfMonth}
+      onClick={handleCellClick}
+      data-is-over={isOver}
+    >
       <DayHeaderRow>
         <DayNumber isToday={isToday} isOutOfMonth={isOutOfMonth}>
           {day}
         </DayNumber>
-        <HolidayList>
-          <Popover
-            isOpen={showPopover}
-            positions={['bottom', 'top']}
-            padding={8}
-            onClickOutside={onClosePopover}
-            content={
-              <PopoverContent>
-                <PopoverTitle>Holidays for {date.toLocaleDateString()}</PopoverTitle>
-                {holidays.map(holiday => (
-                  <HolidayName key={holiday.name} title={holiday.localName}>
-                    {holiday.localName}
-                  </HolidayName>
-                ))}
-              </PopoverContent>
-            }
-            align="start"
-          >
-            <HolidayContainer>
-              {showHoliday && (
-                <HolidayName title={showHoliday.localName} onClick={onOpenPopover}>
-                  {showHoliday.localName}
-                </HolidayName>
-              )}
-              {moreCount > 0 && <MoreBadge onClick={onOpenPopover}>+{moreCount}</MoreBadge>}
-            </HolidayContainer>
-          </Popover>
-        </HolidayList>
+        <AddButton
+          onClick={e => {
+            e.stopPropagation();
+            setShowNewTaskModal(true);
+          }}
+          title="Add task"
+        >
+          <Plus size={16} />
+        </AddButton>
       </DayHeaderRow>
-      <TaskList>
-        {tasks.map(task => (
-          <TaskCard
-            key={task.id}
-            task={task}
-            onDelete={handleDeleteTask}
-            onEdit={handleUpdateTask}
-          />
-        ))}
-      </TaskList>
-      <AddButton onClick={() => setShowNewTaskModal(true)}>
-        <Plus size={16} />
-      </AddButton>
-      {showTasksListModal && (
-        <TasksListModal
-          date={date}
-          tasks={tasks}
-          onClose={() => setShowTasksListModal(false)}
-          onAddTask={handleAddTask}
-          onDeleteTask={handleDeleteTask}
-          onEditTask={handleUpdateTask}
-        />
+      {holidays.length > 0 && (
+        <HolidayContainer>
+          <HolidayList>
+            <Popover
+              isOpen={showPopover}
+              positions={['top', 'bottom']}
+              padding={8}
+              onClickOutside={onClosePopover}
+              content={
+                <PopoverContent>
+                  <PopoverTitle>Holidays</PopoverTitle>
+                  {holidays.map(holiday => (
+                    <HolidayName key={holiday.name}>{holiday.name}</HolidayName>
+                  ))}
+                </PopoverContent>
+              }
+            >
+              <HolidayName onClick={onOpenPopover}>
+                {showHoliday.name}
+                {moreCount > 0 && <MoreBadge>+{moreCount}</MoreBadge>}
+              </HolidayName>
+            </Popover>
+          </HolidayList>
+        </HolidayContainer>
       )}
+      <DroppableTaskList
+        tasks={tasks}
+        date={date}
+        onDelete={handleDeleteTask}
+        onReorder={handleReorderTasks}
+      />
+      <TasksListModal
+        isOpen={showTasksListModal}
+        date={date}
+        onClose={() => setShowTasksListModal(false)}
+      />
       {showNewTaskModal && (
         <TaskInfoModal
           task={{
             id: '',
             title: '',
             description: '',
-            createdAt: new Date().toISOString(),
-            date: date.toISOString(),
+            createdAt: new Date().toDateString(),
+            date: date.toDateString(),
           }}
           onClose={() => setShowNewTaskModal(false)}
-          onDelete={() => {}}
-          onEdit={handleAddTask}
+          currentDate={date}
         />
       )}
     </DayCell>

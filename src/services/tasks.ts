@@ -12,7 +12,7 @@ export const saveTask = (task: Omit<Task, 'id' | 'createdAt'>): Task => {
   const newTask: Task = {
     ...task,
     id: crypto.randomUUID(),
-    createdAt: new Date().toISOString(),
+    createdAt: new Date().toDateString(),
   };
 
   const updatedTasks = [...tasks, newTask];
@@ -26,8 +26,31 @@ export const deleteTask = (taskId: string): void => {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedTasks));
 };
 
+export const updateTask = (updatedTask: Task): void => {
+  const tasks = getTasks();
+  const updatedTasks = tasks.map(task => (task.id === updatedTask.id ? updatedTask : task));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedTasks));
+};
+
 export const getTasksForDate = (date: Date): Task[] => {
   const tasks = getTasks();
-  const dateStr = date.toISOString().split('T')[0];
+  const dateStr = date.toDateString();
   return tasks.filter(task => task.date.startsWith(dateStr));
+};
+
+export const getTaskById = (taskId: string): Task | undefined => {
+  const tasks = getTasks();
+  return tasks.find(task => task.id === taskId);
+};
+
+export const createTask = (task: Omit<Task, 'id' | 'createdAt'>): Task => {
+  return {
+    ...task,
+    id: crypto.randomUUID(),
+    createdAt: new Date().toDateString(),
+  };
+};
+
+export const formatDate = (date: Date): string => {
+  return date.toDateString();
 };

@@ -8,7 +8,7 @@ interface HolidayPopoverProps {
 
 export const HolidayPopover = ({ date, holidays }: HolidayPopoverProps) => (
   <PopoverContent>
-    <PopoverTitle>Holidays for {date.toLocaleDateString()}</PopoverTitle>
+    <PopoverTitle>Holidays for {date.toDateString()}</PopoverTitle>
     {holidays.map(holiday => (
       <HolidayName key={holiday.name} title={holiday.localName}>
         {holiday.localName}

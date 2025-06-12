@@ -93,11 +93,14 @@ export const TaskModal = ({ date, onClose, onSubmit, initialTask, isOpen }: Task
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({
+    if (!date) return;
+
+    const newTask = {
       title,
       description,
-      date: date.toISOString(),
-    });
+      date: date.toDateString(),
+    };
+    onSubmit(newTask);
     onClose();
   };
 
@@ -105,7 +108,7 @@ export const TaskModal = ({ date, onClose, onSubmit, initialTask, isOpen }: Task
     <Modal.Root isOpen={isOpen} onClose={onClose}>
       <Modal.Header>
         <Modal.Title>
-          {initialTask ? 'Edit Task' : 'Add Task'} for {date.toLocaleDateString()}
+          {initialTask ? 'Edit Task' : 'Add Task'} for {date.toDateString()}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
