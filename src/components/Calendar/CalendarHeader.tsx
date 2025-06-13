@@ -1,12 +1,5 @@
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, CalendarDays } from 'lucide-react';
-import {
-  ControlsBar,
-  NavGroup,
-  NavButton,
-  MonthTitle,
-  ToggleGroup,
-  ToggleButton,
-} from './calendarStyles';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ControlsBar, MonthTitle, NavButton, NavGroup } from './calendarStyles';
 import { monthNames } from './dates';
 
 interface CalendarHeaderProps {
@@ -28,13 +21,5 @@ export const CalendarHeader = ({ currentDate, onPrevMonth, onNextMonth }: Calend
     <MonthTitle>
       {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
     </MonthTitle>
-    <ToggleGroup>
-      <ToggleButton selected title="Month view" aria-label="Month view">
-        <CalendarIcon size={20} color="#444" /> Month
-      </ToggleButton>
-      <ToggleButton title="Week view" aria-label="Week view">
-        <CalendarDays size={20} color="#444" /> Week
-      </ToggleButton>
-    </ToggleGroup>
   </ControlsBar>
 );

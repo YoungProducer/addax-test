@@ -114,7 +114,7 @@ const Root = ({ isOpen, onClose, children }: ModalRootProps) => {
   return (
     <ModalContext.Provider value={{ isOpen, onClose }}>
       <Portal>
-        <ModalOverlay>
+        <ModalOverlay onClick={e => e.stopPropagation()}>
           <ModalContent onClick={e => e.stopPropagation()}>{children}</ModalContent>
         </ModalOverlay>
       </Portal>
